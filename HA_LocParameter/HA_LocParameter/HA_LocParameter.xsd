@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--$Header: /EarthSoft/EDP/Formats/data_tables.xsd   13   2009-03-25 13:50:40-06:00   mweaver $-->
+<xs:schema id="dataVals" version="1.1.$Revision: 14 $" targetNamespace="http://tempuri.org/dataVals.xsd"
+	elementFormDefault="qualified" xmlns="http://tempuri.org/dataVals.xsd" xmlns:mstns="http://tempuri.org/dataVals.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:edd="http://www.earthsoft.com/support/edp/ff"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="dataVals" msdata:IsDataSet="true">
+		<xs:annotation>
+			<xs:appinfo>
+				<edd:name>LocationParameter</edd:name>
+				<edd:publisher>EarthSoft, Inc.</edd:publisher>
+				<edd:handler language="vb" source="data_tables" class="DataTablesHandler" /> 
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<!-- ************************************************************ -->
+				<!-- ************************************************************ -->
+				<!-- ************************************************************ -->
+				<!-- ************************************************************ -->
+				<!-- ************************************************************ -->
+				<!-- ************************************************************ -->
+				<!-- ********************* dt_location_parameter **************** -->
+				<xs:element name="dt_location_parameter">
+					<xs:annotation>
+						<xs:documentation>Imports dt_location_parameter data into EQuIS 5</xs:documentation>
+						<xs:appinfo>
+							<!-- Check reference tables -->
+							<edd:table mode="lookup" target="rt_location_param_type">
+								<edd:lookup source="param_code" target="param_code" />
+							</edd:table>
+							<edd:table mode="lookup" target="rt_unit">
+								<edd:lookup source="param_unit" target="unit_code" />
+							</edd:table>
+							<edd:table mode="create" target="dt_location_parameter">
+								<edd:field source="sys_loc_code" target="sys_loc_code" />
+								<edd:field source="param_code" target="param_code" />
+								<edd:field source="measurement_date" target="measurement_date" />
+								<edd:field source="param_value" target="param_value" />
+								<edd:field source="measurement_method" target="measurement_method" />
+								<edd:field source="param_unit" target="param_unit" />
+								<edd:field source="remark" target="remark" />
+							</edd:table>
+						</xs:appinfo>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="sys_loc_code" type="xs:string" nillable="false" />
+							<xs:element name="param_code" type="xs:string" nillable="false" />
+							<xs:element name="measurement_date" type="xs:dateTime" nillable="true" />
+							<xs:element name="param_value" type="xs:string" nillable="true" />
+							<xs:element name="measurement_method" type="xs:string" nillable="true" />
+							<xs:element name="param_unit" type="xs:string" nillable="true" />
+							<xs:element name="remark" type="xs:string" nillable="true" />
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="DocumentKey126">
+						<xs:selector xpath=".//mstns:dt_location_parameter" />
+						<xs:field xpath="mstns:sys_loc_code" />
+						<xs:field xpath="mstns:param_code" />
+						<xs:field xpath="mstns:measurement_date" />
+					</xs:unique>
+				</xs:element>
+				<!-- ************************************************************ -->
+
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="AK_dt_facility">
+			<xs:selector xpath=".//mstns:dt_facility" />
+			<xs:field xpath="mstns:facility_code" />
+		</xs:key>
+	</xs:element>
+</xs:schema>
