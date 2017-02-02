@@ -32,6 +32,9 @@
 							<edd:table mode="lookup" target="rt_unit">
 								<edd:lookup source="param_unit" target="unit_code" />
 							</edd:table>
+							<edd:table mode="create" target="dt_subfacility">
+								<edd:field source="subfacility_code" target="subfacility_code" />
+							</edd:table>							
 							<edd:table mode="create" target="dt_location_parameter">
 								<edd:field source="sys_loc_code" target="sys_loc_code" />
 								<edd:field source="param_code" target="param_code" />
