@@ -7,7 +7,8 @@ Option Strict Off
 Imports EarthSoft.Common
 Imports EarthSoft.Edp
 Imports System
-Imports System.CollectionsImports System.Runtime.InteropServices
+Imports System.Collections
+Imports System.Runtime.InteropServices
 Imports System.Reflection
 
 <Assembly: AssemblyCompany("EarthSoft, Inc.")>
@@ -163,8 +164,8 @@ Public Class HaleyAldrich_EFWEDDHandler
         Return "Result_value is required where detect_flag=Y and result_type_code=TRG, TIC. (6)"
       Case EddErrors.CustomError7
         Return "Cannot be less than the original concentration. (7)"
-      Case EddErrors.CustomError8
-        Return "Subsample_amount and subsample_amount_unit cannot be null when sample type = N, FD, FR, FS, LR, MS, SD or MSD. (8)"
+      'Case EddErrors.CustomError8
+     '   Return "Subsample_amount and subsample_amount_unit cannot be null when sample type = N, FD, FR, FS, LR, MS, SD or MSD. (8)"
       Case EddErrors.CustomError9
         Return "Date cannot precede sample_date. (9)"
       Case EddErrors.CustomError10
@@ -401,12 +402,12 @@ Public Class HaleyAldrich_EFWEDDHandler
       Case "percent_moisture"
         DQM01(e, Me.FSample_Tst)        'DQM01: Percent_Moisture is required where sample_matrix_code=SO or SE and sample_type_code is an N, 'FD', 'FR', 'FS', 'LR', 'MS', 'SD',' or MSD' (10)
         DQM01(e, Me.LabSMP_Tst)
-      Case "subsample_amount"
-        DQM02(e, Me.FSample_Tst)        'DQM02: Subsample_amount is required where sample_type_code is an N, 'FD', 'FR', 'FS', 'LR', 'MS', 'SD',' or MSD' (10)
-        DQM02(e, Me.LabSMP_Tst)
-        DQM03(e)         'DQM03: Subsample_amount_unit cannot be null when Subsample_amount is not null. (16)
-      Case "subsample_amount_unit"
-        DQM03(e)         'DQM03: Subsample_amount_unit cannot be null when Subsample_amount is not null. (16)
+      'Case "subsample_amount"
+       ' DQM02(e, Me.FSample_Tst)        'DQM02: Subsample_amount is required where sample_type_code is an N, 'FD', 'FR', 'FS', 'LR', 'MS', 'SD',' or MSD' (10)
+       ' DQM02(e, Me.LabSMP_Tst)
+        'DQM03(e)         'DQM03: Subsample_amount_unit cannot be null when Subsample_amount is not null. (16)
+     ' Case "subsample_amount_unit"
+      '  DQM03(e)         'DQM03: Subsample_amount_unit cannot be null when Subsample_amount is not null. (16)
       Case "lab_name_code"
         'The element lab_name_code is a required field in EFW2LabTST  format . So the Checks ERR27 can be skipped
         'ERR27(e)            'ERR27: Lab_name_code cannot be null when analysis_location=LB or FL. (14)
@@ -985,7 +986,7 @@ Public Class HaleyAldrich_EFWEDDHandler
         edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("parent_sample_code"))
 
         If (e.Cell.Row.Band.Key.ToUpper = "EFW2FSAMPLE") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("sys_loc_code"))
-        If (e.Cell.Row.Band.Key.ToUpper = "EFW2LABTST") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("subsample_amount"))
+        'If (e.Cell.Row.Band.Key.ToUpper = "EFW2LABTST") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("subsample_amount"))
         If (e.Cell.Row.Band.Key.ToUpper = "EFW2LABSMP") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("sys_sample_code"))
       Case "sample_date"
         edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("sys_sample_code"))
@@ -1009,8 +1010,8 @@ Public Class HaleyAldrich_EFWEDDHandler
         If (e.Cell.Row.Band.Key.ToUpper = "EFW2FSAMPLE") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("start_depth"))
         If (e.Cell.Row.Band.Key.ToUpper = "EFW2LABTST") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("percent_moisture"))
         If (e.Cell.Row.Band.Key.ToUpper = "EFW2LABSMP") Then edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("sys_sample_code"))
-      Case "subsample_amount"
-        edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("subsample_amount_unit"))
+      'Case "subsample_amount"
+      '  edp.AfterCellUpdate(sender, e.Cell.Row.Cells.Item("subsample_amount_unit"))
     End Select
   End Sub
  
