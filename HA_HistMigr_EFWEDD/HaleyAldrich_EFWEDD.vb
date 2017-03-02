@@ -878,32 +878,32 @@ Public Class HaleyAldrich_EFWEDDHandler
 
   'DQM02: Subsample_amount is required where sample_type_code is an N, 'FD', 'FR', 'FS', 'LR', 'MS', 'SD',' or MSD' (10)
   ' Used fields are EFW2LabTST.subsample_amount and EFW2FSample.sample_type_code
-  Private Sub DQM02(ByVal e As System.Data.DataColumnChangeEventArgs, ByVal relation As EarthSoft.EDP.EddRelation)
+ ' Private Sub DQM02(ByVal e As System.Data.DataColumnChangeEventArgs, ByVal relation As EarthSoft.EDP.EddRelation)
 
     ' if for some reason we don't have sample rows, just exit
     'If relation Is Me.FSample_Tst AndAlso Me.EFW2FSample.Rows.Count <= 0 Then Return
-    If relation Is Me.LabSMP_Tst AndAlso Me.EFW2LabSMP.Rows.Count <= 0 Then Return
+ '   If relation Is Me.LabSMP_Tst AndAlso Me.EFW2LabSMP.Rows.Count <= 0 Then Return
 
-    With e.Row
-      Try
+ '   With e.Row
+ '     Try
         ' do we need to lookup the sample row?
-        If (Me.sampleRow Is Nothing) OrElse (Not Me.sampleRow.Item("sys_sample_code").ToString.Equals(.Item("sys_sample_code"))) Then
+  '      If (Me.sampleRow Is Nothing) OrElse (Not Me.sampleRow.Item("sys_sample_code").ToString.Equals(.Item("sys_sample_code"))) Then
           ' use the relation to get the parent row for this sample
-          Me.sampleRow = relation.GetParentRow(e.Row)
-          ' make sure it found the row
-          If Me.sampleRow Is Nothing Then Return
-        End If
+       '   Me.sampleRow = relation.GetParentRow(e.Row)
+  '        ' make sure it found the row
+  '        If Me.sampleRow Is Nothing Then Return
+  '      End If
 
-        If (.Item("subsample_amount") Is DBNull.Value) AndAlso (sampleTypeCode_for_DQM21.Contains(Utilities.String.ToUpper(Me.sampleRow.Item("sample_type_code")))) Then
-          Me.AddError(e.Row, e.Row.Table.Columns.Item("subsample_amount"), EddErrors.CustomError8)
-        Else
-          Me.RemoveError(e.Row, e.Row.Table.Columns.Item("subsample_amount"), EddErrors.CustomError8)
-        End If
-      Catch ex As Exception
+  '      If (.Item("subsample_amount") Is DBNull.Value) AndAlso (sampleTypeCode_for_DQM21.Contains(Utilities.String.ToUpper(Me.sampleRow.Item("sample_type_code")))) Then
+  '        Me.AddError(e.Row, e.Row.Table.Columns.Item("subsample_amount"), EddErrors.CustomError8)
+  '      Else
+  '        Me.RemoveError(e.Row, e.Row.Table.Columns.Item("subsample_amount"), EddErrors.CustomError8)
+   '     End If
+  '    Catch ex As Exception
         '...
-      End Try
-    End With
-  End Sub
+  '    End Try
+  '  End With
+ ' End Sub
 
   Private Sub DQM03(ByVal e As System.Data.DataColumnChangeEventArgs)
     With e.Row
