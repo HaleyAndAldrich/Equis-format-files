@@ -1,0 +1,384 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="FSK" targetNamespace="http://tempuri.org/FSK" xmlns:mstns="http://tempuri.org/FSK" xmlns="http://tempuri.org/FSK" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:edd="http://www.earthsoft.com/support/edp/ff" version="1.0.0">
+  <xs:element name="FSK" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:annotation>
+      <xs:appinfo>
+        <edd:name>LowFlow_FSK</edd:name>
+        <edd:publisher>Haley and Aldrich Inc</edd:publisher>
+        <edd:handler language="vb" source="LowFlow_HA" class="EFWEDDHandler" />
+      </xs:appinfo>
+      <xs:documentation>Prepared by Daniel Putz.  Copyright 2009 Haley and Aldrich Inc.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="LowFlowSampling">
+          <xs:annotation>
+            <xs:appinfo>
+              
+			            <!--Lookups -->
+						<!--Check to make sure that the sampling company is in the database-->
+						<edd:table mode="lookup" target="rt_company" version="eq5">
+							<edd:lookup source="sampling_company_code" target="company_code" />
+							<edd:field source="sampling_Company" target="company_name" />
+						</edd:table>
+						
+						<!-- CHECK ALL OF THE UNITS-->
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="time_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="water_depth_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="flow_rate_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="amt_purged_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="temp_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">	
+							<edd:lookup source="ph_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="cond_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">	
+							<edd:lookup source="salinity_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="dissolved_solids_unit" target="unit_code" />
+						</edd:table>	
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="turbidity_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">	
+							<edd:lookup source="dissolved_oxygen_unit" target="unit_code" />
+						</edd:table>
+						<edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="redox_unit" target="unit_code" />
+						</edd:table>
+						<!--edd:table mode="lookup" target="rt_unit" version="eq5">
+							<edd:lookup source="iron_unit" target="unit_code" />								
+						</edd:table-->		
+						
+						<!--Check to make sure the sample location is already entered-->											
+						<edd:table mode="lookup" target="dt_location" version="eq5">
+							<edd:lookup source="sys_loc_code" target="sys_loc_code" />
+						</edd:table>	
+						<!--Check to make sure the sample is already entered-->
+						<edd:table mode="lookup" target="dt_sample" version="eq5">
+							<edd:lookup source="sys_sample_code" target="sys_sample_code" />							
+						</edd:table>
+						
+						<!--CREATE -->
+
+						<!--Create Test-->																		
+						<edd:table mode="create" target="dt_test" version="eq5">
+							<edd:field new_id="test_id" target="test_id" />									
+							<edd:field method="GetSampleId" target="sample_id" />														
+							<edd:field source="sample_date" target="date_part" /> 
+							<edd:field default="FIELDPARAM" target="analytic_method" />
+							<edd:field default="N" target="fraction" />
+							<edd:field default="FS" target="column_number" />
+							<edd:field default="INITIAL" target="test_type" />							
+							<edd:field default="FI" target="analysis_location" />
+							<edd:field source="sampling_company_code" target="lab_name_code" />
+							<edd:field source="sampler" target="analyst_name" />							
+						</edd:table>
+						
+						<!--Create temp-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="TEMP" target="cas_rn" />
+							<edd:field source="temp_result" target="result_text" />
+							<edd:field source="temp_result" target="result_numeric" />							
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="temp_unit" target="result_unit" />							
+						</edd:table>
+						
+						<!--Create pH-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="PHFLD" target="cas_rn" />
+							<edd:field source="ph_result" target="result_text" />
+							<edd:field source="ph_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="ph_unit" target="result_unit" />							
+						</edd:table>
+						
+						<!--Create Conductivity-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="CONDFLD" target="cas_rn" />
+							<edd:field source="cond_result" target="result_text" />
+							<edd:field source="cond_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="cond_unit" target="result_unit" />							
+						</edd:table>
+
+						<!--Create Salinity-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="SALINITYFLD" target="cas_rn" />
+							<edd:field source="salinity_result" target="result_text" />
+							<edd:field source="salinity_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="salinity_unit" target="result_unit" />							
+						</edd:table>
+						
+						<!--Create Dissolved Solids-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="TDSFLD" target="cas_rn" />
+							<edd:field source="dissolved_solids_result" target="result_text" />
+							<edd:field source="dissolved_solids_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="dissolved_solids_unit" target="result_unit" />							
+						</edd:table>
+												
+						<!--Create Turbudity-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="TURBIDITYFLD" target="cas_rn" />
+							<edd:field source="turbidity_result" target="result_text" />
+							<edd:field source="turbidity_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="turbidity_unit" target="result_unit" />							
+						</edd:table>
+						
+						<!--Create Dissolved Oxygen-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="DOFLD" target="cas_rn" />
+							<edd:field source="dissolved_oxygen_result" target="result_text" />
+							<edd:field source="dissolved_oxygen_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="dissolved_oxygen_unit" target="result_unit" />							
+						</edd:table>
+						
+						<!--Create REDOC/ORP-->
+						<edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="ORPFLD" target="cas_rn" />
+							<edd:field source="redox_result" target="result_text" />
+							<edd:field source="redox_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="redox_unit" target="result_unit" />							
+						</edd:table>
+						
+					
+						<!--Create Iron-->
+						<!--edd:table mode="create" target="dt_result" version="eq5">
+							<edd:field current_id="test_id" target="test_id" />	
+							<edd:field default="FEFERROUSFLD" target="cas_rn" />
+							<edd:field source="iron_result" target="result_text" />
+							<edd:field source="iron_result" target="result_numeric" />
+							<edd:field default="FLD" target="result_type_code" />
+							<edd:field default="YES" target="reportable_result" />
+							<edd:field default="Y" target="detect_flag" />							
+							<edd:field source="iron_unit" target="result_unit" />							
+						</edd:table-->
+						
+						<!-- Add Field Nitrite/Nitrate (NO2NO3FLD) or others later-->
+						<!-- Flow rate and total purged amount?-->						
+						                         
+            </xs:appinfo>
+          </xs:annotation>
+         <xs:complexType>
+            <xs:sequence>
+<!--Begin added by TPD to Allow for Blank First Field on my EDD-->
+                <xs:element name="skip" nillable="true"/>
+<!--End added by TPD to Allow for Blank First Field on my EDD-->
+	     <xs:element name="sample_date" type="xs:dateTime" nillable="true" />
+<!-- removed blank at this seq position-->
+              <xs:element name="sys_loc_code" nillable="false">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="20" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="date_part" type="xs:date" nillable="true" />
+              <xs:element name="time_part" type="xs:time" nillable="true" />
+              <xs:element name="elapsed_time" type="xs:double" nillable="true" />
+              <xs:element name="water_depth" type="xs:double" nillable="true" />  <!-- fixed spelling on "depth"-->
+              <xs:element name="flow_rate" type="xs:double" nillable="true" />
+              <xs:element name="amt_purged" type="xs:double" nillable="true" />
+              <xs:element name="temp_result" type="xs:double" nillable="true" />
+              <xs:element name="ph_result" type="xs:double" nillable="true" />
+              <xs:element name="cond_result" type="xs:double" nillable="true" />
+              <xs:element name="salinity_result" type="xs:double" nillable="true" />
+              <xs:element name="dissolved_solids_result" type="xs:double" nillable="true" />
+              <xs:element name="turbidity_result" type="xs:double" nillable="true" />
+              <xs:element name="dissolved_oxygen_result" type="xs:double" nillable="true" />
+              <xs:element name="redox_result" type="xs:double" nillable="true" />
+              <!--xs:element name="co2_result" type="xs:double" nillable="true" /-->
+              <!--xs:element name="alkalinity_result" type="xs:double" nillable="true" /-->
+              <!--xs:element name="iron_result" type="xs:double" nillable="true" /-->
+              <xs:element name="sys_sample_code" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="40" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="sampler" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="blank2" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="sampling_company_code" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="20" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <!-- moved sample date up to match Appenate required sequence-->
+              <xs:element name="purging_method" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="40" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="time_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="water_depth_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="flow_rate_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="amt_purged_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="temp_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ph_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="cond_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+<!-- This is not collected--><xs:element name="salinity_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+<!-- This is not collected--><xs:element name="dissolved_solids_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="turbidity_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="dissolved_oxygen_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="redox_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <!--xs:element name="co2_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element-->
+              <!--xs:element name="alkalinity_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element-->
+              <!--xs:element name="iron_unit" nillable="true">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element-->
+              
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
