@@ -3,24 +3,309 @@
   <xs:element name="FSK" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
     <xs:annotation>
       <xs:appinfo>
-        <edd:name>LowFlow_FSK</edd:name>
+        <edd:name>FSK_LowFlow</edd:name>
         <edd:publisher>Haley and Aldrich Inc</edd:publisher>
         <edd:handler language="vb" source="LowFlow_HA" class="EFWEDDHandler" />
       </xs:appinfo>
       <xs:documentation>Prepared by Daniel Putz.  Copyright 2009 Haley and Aldrich Inc.</xs:documentation>
     </xs:annotation>
+	
+	
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">	
+<!--BEGIN FSK***********************************************************************************************************-->
+
+          <xs:element name="FieldSampleKey">
+			<xs:annotation>
+				<xs:appinfo>	
+	<!--Begin FSK lookups************************************************************************-->
+					<edd:table mode="lookup" target="rt_matrix" version="eqcom">
+						<edd:lookup source="matrix_code" target="matrix_code" />
+						<edd:field source="matrix_code" target="matrix_desc" />
+					</edd:table>
+					<edd:table mode="lookup" target="rt_sample_type" version="eqcom">
+						<edd:lookup source="sample_type_code" target="sample_type_code" />
+						<edd:field source="sample_type_code" target="sample_type_desc" />
+					</edd:table>
+					<edd:table mode="lookup" target="rt_company" version="eqcom">
+						<edd:lookup source="sampling_company_code" target="company_code" />
+						<edd:field source="sampling_Company" target="company_name" />
+					</edd:table>
+					<edd:table mode="lookup" target="rt_unit" version="eqcom">
+						<edd:lookup source="depth_unit" target="unit_code" />
+						<edd:field source="depth_unit" target="unit_desc" />
+					</edd:table>
+					
+					<edd:table mode="lookup" target="rt_unit" version="eqcom">
+						<edd:lookup source="duration_unit" target="unit_code" />
+					</edd:table>
+					<edd:table mode="lookup" target="dt_task" version="eqcom">
+						<edd:lookup source="task_code" target="task_code" />
+					</edd:table>
+
+					
+					<edd:table mode="lookup" target="rt_medium" version="eqcom">
+						<edd:lookup source="medium_code" target="medium_code" />
+					</edd:table>		
+					
+					<edd:table mode="lookup" target="dt_facility" version="eqcom">
+						<edd:lookup source="project_number" target="facility_code" />
+						<edd:field source="project_number" target="facility_code" />
+					</edd:table>
+	
+
+		  <!--End FSK lookups*****************************************************************************-->						
+				<!--CREATE -->						
+
+					<edd:table mode="create" target="dt_sample" version="eq5">
+						<edd:field new_id="sample_id" target="sample_id" />
+						<edd:field source="sys_sample_code" target="sys_sample_code" />
+						<edd:field source="parent_sample_code" target="parent_sample_code" />
+						<edd:field source="sample_name" target="sample_name" />
+						<edd:field source="sys_loc_code" target="sys_loc_code" />
+						<edd:field method="GetSampleDate" target="sample_date" />
+						<edd:field source="sample_type_code" target="sample_type_code" />
+						<edd:field source="medium_code" target="medium_code" />								
+						<edd:field source="matrix_code" target="matrix_code" />							
+						<edd:field source="start_depth" target="start_depth" />
+						<edd:field source="end_depth" target="end_depth" />
+						<edd:field source="depth_unit" target="depth_unit" />							
+						<edd:field source="duration"  target="duration" />
+						<edd:field source="duration_unit"  target="duration_unit"/>
+						<edd:task_code source="task_code"  target="task_code"/>
+						<edd:field source="custom_field_1" target="custom_field_1" />
+						<edd:field source="custom_field_5" target="custom_field_5" />
+						<edd:field source="sample_source" target="sample_source" />
+					</edd:table>						
+								
+					<edd:table mode="create" target="dt_field_sample" version="eq5">
+						<!--edd:table mode="create" target="dt_field_sample" method="CreateFieldSample" version="eq5"-->
+						<edd:field current_id="sample_id" target="sample_id" />
+						<edd:field source="chain_of_custody" target="chain_of_custody" />
+						<edd:field source="sampler" target="sampler" />
+						<edd:field default="HAI" target="sampling_company_code" />
+						<edd:field source="filter_type" target="filter_type" />
+						<edd:field source="composite_yn" target="composite_yn" />
+					</edd:table>
+					
+					<edd:table mode="parent" target="dt_chain_of_custody" version="eq5">
+						<edd:field source="chain_of_custody" target="chain_of_custody" />							
+					</edd:table>	
+				</xs:appinfo>
+			</xs:annotation>
+			<!--End Create-->
+			
+			<!--Build FSK Input Table-->
+				<xs:complexType>
+					<xs:sequence>
+					
+					   <xs:element name="project_number" nillable="false">
+						<xs:annotation>
+						  <xs:documentation>Base project number stored in dt_facility.facility_code.</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="255" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element> 
+
+					   <xs:element name="blank" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="50" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="sys_sample_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					   <xs:element name="sample_name" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="50" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="parent_sample_code" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element> 
+					  <xs:element name="sys_loc_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>  			  
+					  <xs:element name="sample_date" type="xs:date" nillable="false" />
+					  <xs:element name="Sample_time" type="xs:time" nillable="true" />
+					  <xs:element name="sample_type_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="matrix_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="lab_name_code" nillable="true">
+						<xs:annotation>
+						  <xs:documentation>Unique code based on the lab name.</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>		
+					  <xs:element name="sampling_company_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>	
+					  <xs:element name="sampler" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="50" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="medium_code" nillable="true">
+						<xs:annotation>
+						  <xs:documentation>Unique code identifing the sample medium (e.g. air, water, soil)).</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>            
+					  <xs:element name="medium_code_description" nillable="true">
+						<xs:annotation>
+						  <xs:documentation>Description of the sample medium (e.g. air, water, soil).</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="255" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element> 
+					<xs:element name="filter_type" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+							<xs:enumeration value="T"/>
+							<xs:enumeration value="D"/>
+							<xs:enumeration value="N"/>        
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="composite_yn" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="1" />
+							<xs:enumeration value="Y"/>
+							<xs:enumeration value="N"/>
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="start_depth" type="xs:double" nillable="true" />
+					  <xs:element name="end_depth" type="xs:double" nillable="true" />      
+						<xs:element name="depth_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="15" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+						<xs:element name="duration" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+						  </xs:restriction>
+						</xs:simpleType>
+						</xs:element>
+						<xs:element name="duration_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="15" />
+						  </xs:restriction>
+						</xs:simpleType>
+						</xs:element>
+						<xs:element name="task_code" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+						</xs:element>		
+					  <xs:element name="chain_of_custody" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="15" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					 <xs:element name="sample_source" default="FIELD" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="20" />
+							<xs:enumeration value="FIELD" />
+							<xs:enumeration value="LAB" />					
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="custom_field_1" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="255" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>	 
+					 <xs:element name="custom_field_5" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="255" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+				
+				</xs:sequence>					  
+			</xs:complexType>					  
+
+			<!--END FSK Input Table-->	
+
+		</xs:element>
+
+<!--END FSK**********************************************************************************************************-->
+
+
+
+
+<!--BEGIN Low Flow***************************************************************************************************-->
+
+
         <xs:element name="LowFlowSampling">
           <xs:annotation>
             <xs:appinfo>
               
 			            <!--Lookups -->
-						<!--Check to make sure that the sampling company is in the database-->
-						<edd:table mode="lookup" target="rt_company" version="eq5">
-							<edd:lookup source="sampling_company_code" target="company_code" />
-							<edd:field source="sampling_Company" target="company_name" />
-						</edd:table>
+
 						
 						<!-- CHECK ALL OF THE UNITS-->
 						<edd:table mode="lookup" target="rt_unit" version="eq5">
@@ -63,14 +348,7 @@
 							<edd:lookup source="iron_unit" target="unit_code" />								
 						</edd:table-->		
 						
-						<!--Check to make sure the sample location is already entered-->											
-						<edd:table mode="lookup" target="dt_location" version="eq5">
-							<edd:lookup source="sys_loc_code" target="sys_loc_code" />
-						</edd:table>	
-						<!--Check to make sure the sample is already entered-->
-						<edd:table mode="lookup" target="dt_sample" version="eq5">
-							<edd:lookup source="sys_sample_code" target="sys_sample_code" />							
-						</edd:table>
+
 						
 						<!--CREATE -->
 
@@ -78,14 +356,12 @@
 						<edd:table mode="create" target="dt_test" version="eq5">
 							<edd:field new_id="test_id" target="test_id" />									
 							<edd:field method="GetSampleId" target="sample_id" />														
-							<edd:field source="sample_date" target="date_part" /> 
 							<edd:field default="FIELDPARAM" target="analytic_method" />
 							<edd:field default="N" target="fraction" />
 							<edd:field default="FS" target="column_number" />
 							<edd:field default="INITIAL" target="test_type" />							
 							<edd:field default="FI" target="analysis_location" />
-							<edd:field source="sampling_company_code" target="lab_name_code" />
-							<edd:field source="sampler" target="analyst_name" />							
+						
 						</edd:table>
 						
 						<!--Create temp-->
@@ -204,181 +480,162 @@
           </xs:annotation>
          <xs:complexType>
             <xs:sequence>
-<!--Begin added by TPD to Allow for Blank First Field on my EDD-->
-                <xs:element name="skip" nillable="true"/>
-<!--End added by TPD to Allow for Blank First Field on my EDD-->
-	     <xs:element name="sample_date" type="xs:dateTime" nillable="true" />
-<!-- removed blank at this seq position-->
-              <xs:element name="sys_loc_code" nillable="false">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="20" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="date_part" type="xs:date" nillable="true" />
-              <xs:element name="time_part" type="xs:time" nillable="true" />
-              <xs:element name="elapsed_time" type="xs:double" nillable="true" />
-              <xs:element name="water_depth" type="xs:double" nillable="true" />  <!-- fixed spelling on "depth"-->
-              <xs:element name="flow_rate" type="xs:double" nillable="true" />
-              <xs:element name="amt_purged" type="xs:double" nillable="true" />
-              <xs:element name="temp_result" type="xs:double" nillable="true" />
-              <xs:element name="ph_result" type="xs:double" nillable="true" />
-              <xs:element name="cond_result" type="xs:double" nillable="true" />
-              <xs:element name="salinity_result" type="xs:double" nillable="true" />
-              <xs:element name="dissolved_solids_result" type="xs:double" nillable="true" />
-              <xs:element name="turbidity_result" type="xs:double" nillable="true" />
-              <xs:element name="dissolved_oxygen_result" type="xs:double" nillable="true" />
-              <xs:element name="redox_result" type="xs:double" nillable="true" />
-              <!--xs:element name="co2_result" type="xs:double" nillable="true" /-->
-              <!--xs:element name="alkalinity_result" type="xs:double" nillable="true" /-->
-              <!--xs:element name="iron_result" type="xs:double" nillable="true" /-->
-              <xs:element name="sys_sample_code" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="40" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="sampler" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="50" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="blank2" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="sampling_company_code" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="20" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <!-- moved sample date up to match Appenate required sequence-->
-              <xs:element name="purging_method" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="40" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="time_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="water_depth_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="flow_rate_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="amt_purged_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="temp_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="ph_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="cond_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-<!-- This is not collected--><xs:element name="salinity_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-<!-- This is not collected--><xs:element name="dissolved_solids_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="turbidity_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="dissolved_oxygen_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <xs:element name="redox_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element>
-              <!--xs:element name="co2_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element-->
-              <!--xs:element name="alkalinity_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element-->
-              <!--xs:element name="iron_unit" nillable="true">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:maxLength value="10" />
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:element-->
-              
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
+		<!--Begin added by TPD to Allow for Blank First Field on my EDD-->
+						<xs:element name="skip" nillable="true"/>
+					  <xs:element name="sys_sample_code" nillable="false">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>					
+				 <xs:element name="sample_date" type="xs:dateTime" nillable="true" />
+				  <xs:element name="elapsed_time" type="xs:double" nillable="true" />
+					  <xs:element name="water_depth" type="xs:double" nillable="true" />  <!-- fixed spelling on "depth"-->
+					  <xs:element name="flow_rate" type="xs:double" nillable="true" />
+					  <xs:element name="amt_purged" type="xs:double" nillable="true" />
+					  <xs:element name="temp_result" type="xs:double" nillable="true" />
+					  <xs:element name="ph_result" type="xs:double" nillable="true" />
+					  <xs:element name="cond_result" type="xs:double" nillable="true" />
+					  <xs:element name="salinity_result" type="xs:double" nillable="true" />
+					  <xs:element name="dissolved_solids_result" type="xs:double" nillable="true" />
+					  <xs:element name="turbidity_result" type="xs:double" nillable="true" />
+					  <xs:element name="dissolved_oxygen_result" type="xs:double" nillable="true" />
+					  <xs:element name="redox_result" type="xs:double" nillable="true" />
+					  <!--xs:element name="co2_result" type="xs:double" nillable="true" /-->
+					  <!--xs:element name="alkalinity_result" type="xs:double" nillable="true" /-->
+					  <!--xs:element name="iron_result" type="xs:double" nillable="true" /-->
+
+					  <!-- moved sample date up to match Appenate required sequence-->
+					  <xs:element name="purging_method" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="40" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="time_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="water_depth_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="flow_rate_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="amt_purged_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="temp_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="ph_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="cond_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+		<!-- This is not collected--><xs:element name="salinity_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+		<!-- This is not collected--><xs:element name="dissolved_solids_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="turbidity_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="dissolved_oxygen_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <xs:element name="redox_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element>
+					  <!--xs:element name="co2_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element-->
+					  <!--xs:element name="alkalinity_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element-->
+					  <!--xs:element name="iron_unit" nillable="true">
+						<xs:simpleType>
+						  <xs:restriction base="xs:string">
+							<xs:maxLength value="10" />
+						  </xs:restriction>
+						</xs:simpleType>
+					  </xs:element-->
+					  
+					</xs:sequence>
+				  </xs:complexType>
+				</xs:element>
+
+<!--END Low Flow**********************************************************************************************************-->
+
+			</xs:choice>	
+		</xs:complexType>
+<!-- insert keys here -->	
+		<xs:key name="PK_FSK">
+			<xs:selector xpath=".//FieldSampleKey" />
+			<xs:field xpath="sys_sample_code" />
+		</xs:key> 		
+		<xs:keyref name="FK_LowFlow_FieldSampleKey" refer="PK_FSK">
+			<xs:selector xpath=".//LowFlowSampling" />
+			<xs:field xpath="sys_sample_code" />		
+		</xs:keyref>			
+    </xs:element>
 </xs:schema>
