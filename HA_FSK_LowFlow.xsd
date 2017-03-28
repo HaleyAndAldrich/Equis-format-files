@@ -254,7 +254,7 @@
 						  </xs:restriction>
 						</xs:simpleType>
 						</xs:element>		
-					  <xs:element name="chain_of_custody" nillable="false">
+					  <xs:element name="chain_of_custody" nillable="true">
 						<xs:simpleType>
 						  <xs:restriction base="xs:string">
 							<xs:maxLength value="15" />
